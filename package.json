@@ -9,5 +9,9 @@
   },
   "author": "Takechy",
   "license": "MIT",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@types/papaparse": "^5.3.7",
+    "papaparse": "^5.4.1"
+  }
 }

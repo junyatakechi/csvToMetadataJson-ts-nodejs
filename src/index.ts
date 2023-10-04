@@ -57,7 +57,18 @@ if (!csvFilePath) {
 rl.question('Attributesを記入しているのは何列目からですか？一番最初の列を0番とします。', async (attributeFieldsStartIndex) => {
     rl.close();
     try {
-        const csvData = await fs.readFile(csvFilePath, 'utf8');
+        let csvData = await fs.readFile(csvFilePath, 'utf8');
+
+        // 不可視文字を検出し、ログに出力
+        const invisCharsRegex = /[\u200b-\u200f\u202a-\u202e\u2060-\u206f\ufeff\ufff9-\ufffb]/g;
+        let match;
+        while ((match = invisCharsRegex.exec(csvData)) !== null) {
+            console.log(`不可視文字 ${match[0]} が位置 ${match.index} で検出されました。`);
+        }
+
+        // 不可視文字を削除
+        csvData = csvData.replace(invisCharsRegex, '');
+
         const jsonMetadata = csvToJson(csvData, Number(attributeFieldsStartIndex));
         const outputDir = path.join(path.dirname(csvFilePath), path.basename(csvFilePath, '.csv'));
         await fs.mkdir(outputDir, { recursive: true });
